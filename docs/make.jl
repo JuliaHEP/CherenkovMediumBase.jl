@@ -19,6 +19,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/juliahep/CherenkovMediumBase.jl",
+    repo="github.com/JuliaHEP/CherenkovMediumBase.jl",
     devbranch="main",
 )
