@@ -73,6 +73,6 @@ jobs:
         shell: julia --project=docs --color=yes {0}
         run: |
           using Documenter: DocMeta, doctest
-          using AbstractMediumProperties
-          DocMeta.setdocmeta!(AbstractMediumProperties, :DocTestSetup, :(using AbstractMediumProperties); recursive=true)
-          doctest(AbstractMediumProperties)
+          using CherenkovMediumBase
+          DocMeta.setdocmeta!(CherenkovMediumBase, :DocTestSetup, :(using CherenkovMediumBase); recursive=true)
+          doctest(CherenkovMediumBase)
