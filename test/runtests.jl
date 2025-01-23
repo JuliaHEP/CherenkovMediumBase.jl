@@ -11,7 +11,6 @@ function test_interface(medium::MediumProperties)
     @test pressure(medium) isa Number
     @test temperature(medium) isa Number
     @test material_density(medium) isa Number
-    @test mean_scattering_angle(medium) isa Number
     @test scattering_length(medium, wavelength) isa Number
     @test absorption_length(medium, wavelength) isa Number
     @test group_refractive_index(medium, wavelength) isa Number
@@ -41,7 +40,6 @@ end
 CherenkovMediumBase.pressure(medium::MockMediumProperties) = medium.pressure
 CherenkovMediumBase.temperature(medium::MockMediumProperties) = medium.temperature
 CherenkovMediumBase.material_density(medium::MockMediumProperties) = 3.
-CherenkovMediumBase.mean_scattering_angle(medium::MockMediumProperties) = 4.
 CherenkovMediumBase.absorption_length(medium::MockMediumProperties, wavelength) = 6.
 CherenkovMediumBase.sample_scattering_function(medium::MockMediumProperties) =  rand(medium.scattering_model.scattering_function)
 
