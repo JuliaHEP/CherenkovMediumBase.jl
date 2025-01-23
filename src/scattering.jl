@@ -20,6 +20,11 @@ abstract type AbstractScatteringFunction <: Sampleable{Univariate, Continuous} e
 rand(rng::AbstractRNG, s::AbstractScatteringFunction) = _not_implemented(s)
 
 
+"""
+    HenyeyGreenStein{T}
+
+Struct for Henyey-Greenstein scattering function.
+"""
 struct HenyeyGreenStein{T} <: AbstractScatteringFunction
     g::T # Mean scattering angle
 end
@@ -44,6 +49,11 @@ end
 
 Base.rand(rng::AbstractRNG, s::HenyeyGreenStein) = _hg_scattering_func(rng, s.g)
 
+"""
+    SimplifiedLiu{T}
+
+Struct for Simplified-Liu scattering function.
+"""
 struct SimplifiedLiu{T} <: AbstractScatteringFunction
     g::T # Mean scattering angle
 end
@@ -66,8 +76,11 @@ end
 Base.rand(rng::AbstractRNG, s::SimplifiedLiu) = sl_scattering_func(rng, s.g)
 
 
+"""
+    PolynomialScatteringFunction{T, P <: ImmutablePolynomial{T}}
 
-
+Struct for polynomial scattering function.
+"""
 struct PolynomialScatteringFunction{T, P <: ImmutablePolynomial{T}} <: AbstractScatteringFunction
     poly::P
 end
@@ -122,6 +135,11 @@ function EinsteinSmoluchowsky(b::T) where {T}
     return PolynomialScatteringFunction(poly)
 end
 
+"""
+    TwoComponentScatteringModel{F1<:AbstractScatteringFunction, F2<:AbstractScatteringFunction}
+
+Struct for two-component scattering model.
+"""
 struct TwoComponentScatteringModel{F1<:AbstractScatteringFunction, F2<:AbstractScatteringFunction} <: AbstractScatteringFunction
     f1::F1
     f2::F2
@@ -169,16 +187,25 @@ C.D. Mobley "Light and Water", ISBN 0-12-502750-8, pag. 119.
 
 end
 
-
 abstract type AbstractScatteringModel end
 scattering_length(model::AbstractScatteringModel, wavelength::Real) = _not_implemented(model)
 
+"""
+    KopelevichScatteringModel{F<:AbstractScatteringFunction, T}
+
+Struct for Kopelevich scattering model.
+"""
 struct KopelevichScatteringModel{F<:AbstractScatteringFunction, T} <: AbstractScatteringModel
     scattering_function::F
     vol_conc_large_part::T
     vol_conc_small_part::T
 end
 
+"""
+    scattering_length(model::KopelevichScatteringModel, wavelength::Real)
+
+Calculate the scattering length for the Kopelevich scattering model.
+"""
 function scattering_length(model::KopelevichScatteringModel, wavelength::Real)
     return _sca_len_part_conc(
         wavelength,
@@ -186,61 +213,3 @@ function scattering_length(model::KopelevichScatteringModel, wavelength::Real)
         vol_conc_large_part=model.vol_conc_large_part
     )
 end
-
-
-
-"""
-    mixed_hg_es_scattering_func(g::Real, hg_fraction::Real, poly_coeffs::NTuple{4, Real})
-
-Mixture model of HG and generic scattering function.
-"""
-function mixed_hg_generic_scattering_func(g::T, hg_fraction::T, poly_coeffs::NTuple{4, T}) where {T<:Real}
-    choice = rand(T)
-    if choice < hg_fraction
-        return hg_scattering_func(g)
-    end
-    return generic_scattering_function(poly_coeffs...)
-end
-
-
-
-
-"""
-    mixed_hg_sl_scattering_func(g, hg_fraction)
-Mixture model of HG and SL.
-
-# Arguments
-- `g::Real`: mean scattering angle
-- `hg_fraction::Real`: mixture weight of the HG component
-"""
-function mixed_hg_sl_scattering_func(g::Real, hg_fraction::Real)
-    choice = rand()
-    if choice < hg_fraction
-        return hg_scattering_func(g)
-    end
-    return sl_scattering_func(g)
-end
-
-"""
-    mixed_hg_sl_scattering_func_ppc(g, hg_fraction)
-Mixture model of HG and SL as implemented in PPC
-"""
-function mixed_hg_sl_scattering_func_ppc(g::T, hg_fraction::T) where {T <:Real}
-    xi = rand()
-    sf = hg_fraction
-    gr::T = (1-g)/(1+g)
-	if(xi>sf)
-	  xi=(1-xi)/(1-sf)
-	  xi=2*xi-1
-	  if(g!=0)
-	    ga::T=(1-g*g)/(1+g*xi)
-	    xi=(1+g*g-ga*ga)/(2*g)
-      end
-	else
-	  xi/=sf
-	  xi=2*xi^gr-1
-    end
-    return clamp(xi, T(-1), T(1))
-end
-
-

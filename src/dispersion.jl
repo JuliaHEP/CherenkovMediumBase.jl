@@ -3,8 +3,18 @@ export QuanFryDispersion
 
 abstract type AbstractDispersionModel end
 
+"""
+    phase_refractive_index(disperion_model::AbstractDispersionModel)
 
+Calculate the phase refractive index for a given dispersion model.
+"""
 phase_refractive_index(disperion_model::AbstractDispersionModel) = _not_implemented(disperion_model)
+
+"""
+    dispersion(disperion_model::AbstractDispersionModel)
+
+Calculate the dispersion for a given dispersion model.
+"""
 dispersion(disperion_model::AbstractDispersionModel) = _not_implemented(disperion_model)
 
 
@@ -110,6 +120,11 @@ function dispersion_fry(wavelength::T, a2, a3, a4) where {T<:Number}
     return T(a2 + T(2) * x * a3 + T(3) * x^2 * a4) * T(-1) / wavelength^2
 end
 
+"""
+    QuanFryDispersion{T <: Real}
+
+Struct to hold parameters for the Quan & Fry dispersion model.
+"""
 struct QuanFryDispersion{T <: Real} <: AbstractDispersionModel
     a01::T
     a2::T
@@ -117,19 +132,38 @@ struct QuanFryDispersion{T <: Real} <: AbstractDispersionModel
     a4::T
 end
 
+"""
+    QuanFryDispersion(a01, a2, a3, a4)
+
+Constructor for QuanFryDispersion with given parameters.
+"""
 function QuanFryDispersion(a01, a2, a3, a4)
     return QuanFryDispersion(promote(a01, a2, a3, a4)...)
 end
 
+"""
+    QuanFryDispersion(salinity, temperature, pressure)
+
+Constructor for QuanFryDispersion using salinity, temperature, and pressure.
+"""
 function QuanFryDispersion(salinity, temperature, pressure)
     return QuanFryDispersion(calc_quan_fry_params(salinity, temperature, pressure)...)
 end
 
+"""
+    phase_refractive_index(disperion_model::QuanFryDispersion, wavelength)
+
+Calculate the phase refractive index for the Quan & Fry dispersion model.
+"""
 function phase_refractive_index(disperion_model::QuanFryDispersion, wavelength)
     return _refractive_index_fry(wavelength, (disperion_model.a01, disperion_model.a2, disperion_model.a3, disperion_model.a4))
 end
 
+"""
+    dispersion(dispersion_model::QuanFryDispersion, wavelength)
 
+Calculate the dispersion for the Quan & Fry dispersion model.
+"""
 function dispersion(dispersion_model::QuanFryDispersion, wavelength)
     return dispersion_fry(wavelength, dispersion_model.a2, dispersion_model.a3, dispersion_model.a4)
 end
