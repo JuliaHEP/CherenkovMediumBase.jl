@@ -15,25 +15,25 @@ abstract type MediumProperties end
 _not_implemented(type) = error("Not implemented for type $(typeof(type))")
 
 """
-    pressure(::MediumProperties) 
+    pressure(medium::MediumProperties)
 
 This function returns the pressure for a given medium.
 """
 pressure(medium::MediumProperties) = _not_implemented(medium)
 
 """
-    temperature(::MediumProperties)
+    temperature(medium::MediumProperties)
 
 This function returns the temperature for a given medium.
 """
-temperature(medium::MediumProperties) = _not_implemented(medium) 
+temperature(medium::MediumProperties) = _not_implemented(medium)
 
 """
-    material_density(::MediumProperties)
+    material_density(medium::MediumProperties)
 
 This function returns the material density for a given medium.
 """
-material_density(medium::MediumProperties) = _not_implemented(medium) 
+material_density(medium::MediumProperties) = _not_implemented(medium)
 
 """
     radiation_length(medium::MediumProperties)
@@ -43,48 +43,43 @@ This function returns the radiation length for a given medium.
 radiation_length(medium::MediumProperties) = _not_implemented(medium)
 
 """
-    scattering_function(medium::MediumProperties)
+    sample_scattering_function(medium::MediumProperties)
 
 Return a scattering angle sampled from the scattering function of the medium.
-
 """
 sample_scattering_function(medium::MediumProperties) = _not_implemented(medium)
 
 """
-    scattering_length(medium::MediumProperties, wavelength) 
-Return scattering length at `wavelength` in units m.
+    scattering_length(medium::MediumProperties, wavelength)
 
+Return scattering length at `wavelength` in units m.
 `wavelength` is expected to be in units nm. Returned length is in units m.
 """
 scattering_length(medium::MediumProperties, wavelength) = _not_implemented(medium)
 
-
 """
     absorption_length(medium::MediumProperties, wavelength)
-Return absorption length at `wavelength` in units m.
 
+Return absorption length at `wavelength` in units m.
 `wavelength` is expected to be in units nm.
 """
 absorption_length(medium::MediumProperties, wavelength) = _not_implemented(medium)
 
-
 """
-    phase_refractive_index(medium, wavelength)
-Return the phase refractive index at `wavelength`.
+    phase_refractive_index(medium::MediumProperties, wavelength)
 
+Return the phase refractive index at `wavelength`.
 `wavelength` is expected to be in units nm.
 """
 phase_refractive_index(medium::MediumProperties, wavelength) = _not_implemented(medium)
 
-
 """
-    dispersion(medium, wavelength)
-Return the dispersion dn/dλ at `wavelength` in units 1/nm.
+    dispersion(medium::MediumProperties, wavelength)
 
+Return the dispersion dn/dλ at `wavelength` in units 1/nm.
 `wavelength` is expected to be in units nm.
 """
 dispersion(medium::MediumProperties, wavelength) = _not_implemented(medium)
-
 
 """
     cherenkov_angle(medium, wavelength)
