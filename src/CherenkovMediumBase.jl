@@ -68,7 +68,8 @@ radiation_length(medium::MediumProperties) = _not_implemented(medium)
 Return a scattering angle sampled from the scattering function of the medium.
 """
 function sample_scattering_function(medium::MediumProperties)
-    model = scattering_model(medium)
+    model = get_scattering_model(medium)
+    return sample_scattering_function(model)
 end
 
 """
