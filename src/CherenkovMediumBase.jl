@@ -15,6 +15,19 @@ abstract type MediumProperties end
 _not_implemented(type) = error("Not implemented for type $(typeof(type))")
 
 """
+    get_dispersion_model(medium::MediumProperties)
+Return the dispersion model for a given medium.
+"""
+get_dispersion_model(medium::MediumProperties) = _not_implemented(medium)
+
+
+"""
+    get_scattering_model(medium::MediumProperties)
+Return the scattering model for a given medium.
+"""
+get_scattering_model(medium::MediumProperties) = _not_implemented(medium)
+
+"""
     pressure(medium::MediumProperties)
 
 This function returns the pressure for a given medium.
@@ -47,7 +60,11 @@ radiation_length(medium::MediumProperties) = _not_implemented(medium)
 
 Return a scattering angle sampled from the scattering function of the medium.
 """
-sample_scattering_function(medium::MediumProperties) = _not_implemented(medium)
+function sample_scattering_function(medium::MediumProperties)
+    model = scattering_model(medium)
+
+
+end
 
 """
     scattering_length(medium::MediumProperties, wavelength)
@@ -55,7 +72,10 @@ sample_scattering_function(medium::MediumProperties) = _not_implemented(medium)
 Return scattering length at `wavelength` in units m.
 `wavelength` is expected to be in units nm. Returned length is in units m.
 """
-scattering_length(medium::MediumProperties, wavelength) = _not_implemented(medium)
+function scattering_length(medium::MediumProperties, wavelength)
+    model = get_scattering_model(medium)
+    return scattering_length(model, wavelength)
+end
 
 """
     absorption_length(medium::MediumProperties, wavelength)
@@ -71,7 +91,10 @@ absorption_length(medium::MediumProperties, wavelength) = _not_implemented(mediu
 Return the phase refractive index at `wavelength`.
 `wavelength` is expected to be in units nm.
 """
-phase_refractive_index(medium::MediumProperties, wavelength) = _not_implemented(medium)
+function phase_refractive_index(medium::MediumProperties, wavelength)
+    model =get_dispersion_model(medium)
+    return phase_refractive_index(model, wavelength)
+end
 
 """
     dispersion(medium::MediumProperties, wavelength)
@@ -79,7 +102,10 @@ phase_refractive_index(medium::MediumProperties, wavelength) = _not_implemented(
 Return the dispersion dn/dλ at `wavelength` in units 1/nm.
 `wavelength` is expected to be in units nm.
 """
-dispersion(medium::MediumProperties, wavelength) = _not_implemented(medium)
+function dispersion(medium::MediumProperties, wavelength)
+    model = get_dispersion_model(medium)
+    return dispersion(model, wavelength)
+end
 
 """
     cherenkov_angle(medium, wavelength)

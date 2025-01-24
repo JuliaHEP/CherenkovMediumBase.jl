@@ -9,7 +9,7 @@ export HenyeyGreenStein
 export PolynomialScatteringFunction
 export EinsteinSmoluchowsky
 export SimplifiedLiu
-export TwoComponentScatteringModel
+export TwoComponentScatteringFunction
 export MixedHGES
 export MixedHGSL
 
@@ -136,22 +136,22 @@ function EinsteinSmoluchowsky(b::T) where {T}
 end
 
 """
-    TwoComponentScatteringModel{F1<:AbstractScatteringFunction, F2<:AbstractScatteringFunction}
+    TwoComponentScatteringFunction{F1<:AbstractScatteringFunction, F2<:AbstractScatteringFunction}
 
 Struct for two-component scattering model.
 """
-struct TwoComponentScatteringModel{F1<:AbstractScatteringFunction, F2<:AbstractScatteringFunction} <: AbstractScatteringFunction
+struct TwoComponentScatteringFunction{F1<:AbstractScatteringFunction, F2<:AbstractScatteringFunction} <: AbstractScatteringFunction
     f1::F1
     f2::F2
     fraction::Real
 end
 
 
-MixedHGES(g, b, fraction) = TwoComponentScatteringModel(HenyeyGreenStein(g), EinsteinSmoluchowsky(b), fraction)
-MixedHGSL(g, fraction) = TwoComponentScatteringModel(HenyeyGreenStein(g), SimplifiedLiu(g), fraction)
+MixedHGES(g, b, fraction) = TwoComponentScatteringFunction(HenyeyGreenStein(g), EinsteinSmoluchowsky(b), fraction)
+MixedHGSL(g, fraction) = TwoComponentScatteringFunction(HenyeyGreenStein(g), SimplifiedLiu(g), fraction)
 
 
-function Base.rand(rng::AbstractRNG, s::TwoComponentScatteringModel)
+function Base.rand(rng::AbstractRNG, s::TwoComponentScatteringFunction)
     choice = Base.rand(rng, Float64)
     if choice < s.fraction
         return Base.rand(rng, s.f1)
@@ -189,6 +189,12 @@ end
 
 abstract type AbstractScatteringModel end
 scattering_length(model::AbstractScatteringModel, wavelength::Real) = _not_implemented(model)
+get_scattering_function(model::AbstractScatteringModel) = _not_implemented(model)
+
+function sample_scattering_function(model::AbstractScatteringModel)
+    func = get_scattering_function(model)
+    return rand(func)
+end
 
 """
     KopelevichScatteringModel{F<:AbstractScatteringFunction, T}
