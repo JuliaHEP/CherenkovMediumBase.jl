@@ -1,6 +1,9 @@
 using Interpolations
 using StaticArrays
+
 export AbstractAbsorptionModel
+export InterpolatedAbsorptionModel
+export WavelengthIndependentAbsorptionModel
 
 abstract type AbstractAbsorptionModel end
 

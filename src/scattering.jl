@@ -14,6 +14,7 @@ export MixedHGES
 export MixedHGSL
 
 export KopelevichScatteringModel
+export WavelengthIndependentScatteringModel
 
 abstract type AbstractScatteringFunction <: Sampleable{Univariate, Continuous} end
 
