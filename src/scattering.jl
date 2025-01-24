@@ -219,3 +219,18 @@ function scattering_length(model::KopelevichScatteringModel, wavelength::Real)
         vol_conc_large_part=model.vol_conc_large_part
     )
 end
+
+"""
+    WavelengthIndependentScatteringModel{T, F<:AbstractScatteringFunction} <: AbstractScatteringModel
+
+Struct for wavelength-independent scattering model.
+"""
+struct WavelengthIndependentScatteringModel{T, F<:AbstractScatteringFunction} <: AbstractScatteringModel
+    scattering_function::F
+    scattering_length::T
+end
+
+
+function scattering_length(model::WavelengthIndependentScatteringModel, wavelength::Real)
+    return model.scattering_length
+end

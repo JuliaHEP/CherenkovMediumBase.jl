@@ -6,6 +6,7 @@ export sample_scattering_function, absorption_length, group_refractive_index, ph
 export dispersion, cherenkov_angle, group_velocity, radiation_length
 export scattering_function
 export scattering_length
+export get_dispersion_model, get_scattering_model, get_absorption_model
 
 
 const c_vac_m_ns = 0.299792458
@@ -26,6 +27,12 @@ get_dispersion_model(medium::MediumProperties) = _not_implemented(medium)
 Return the scattering model for a given medium.
 """
 get_scattering_model(medium::MediumProperties) = _not_implemented(medium)
+
+"""
+    get_absorption_model(medium::MediumProperties)
+Return the absorption model for a given medium.
+"""
+get_absorption_model(medium::MediumProperties) = _not_implemented(medium)
 
 """
     pressure(medium::MediumProperties)
@@ -62,8 +69,6 @@ Return a scattering angle sampled from the scattering function of the medium.
 """
 function sample_scattering_function(medium::MediumProperties)
     model = scattering_model(medium)
-
-
 end
 
 """
@@ -83,7 +88,10 @@ end
 Return absorption length at `wavelength` in units m.
 `wavelength` is expected to be in units nm.
 """
-absorption_length(medium::MediumProperties, wavelength) = _not_implemented(medium)
+function absorption_length(medium::MediumProperties, wavelength)
+    model = get_absorption_model(medium)
+    return absorption_length(model, wavelength)
+end
 
 """
     phase_refractive_index(medium::MediumProperties, wavelength)
@@ -152,5 +160,6 @@ end
 include("utils.jl")
 include("dispersion.jl")
 include("scattering.jl")
+include("absorption.jl")
 
 end # module
