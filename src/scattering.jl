@@ -226,7 +226,7 @@ end
 
 Struct for wavelength-independent scattering model.
 """
-struct WavelengthIndependentScatteringModel{ F<:AbstractScatteringFunction, T} <: AbstractScatteringModel
+struct WavelengthIndependentScatteringModel{T, F<:AbstractScatteringFunction} <: AbstractScatteringModel
     scattering_function::F
     scattering_length::T
 end
