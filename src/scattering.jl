@@ -126,7 +126,7 @@ end
 Make a 3rd order polynomial that approximates the inverse of the ES scattering function.
 """
 function make_inverse_es_polynomial(b::T) where {T<:Real}
-    cos_theta = -1:0.01:1
+    cos_theta = T.(-1:0.01:1)
     es_poly = fit(Polynomial, es_scattering_cumulative.(cos_theta, b), cos_theta, 3)
     return ImmutablePolynomial(Tuple(T.(collect(es_poly))))
 end
