@@ -53,36 +53,15 @@ struct Water <: MediumProperties
         end
 end
 
+CherenkovMediumBase.get_scattering_model(medium::Water) = medium.scattering_model
+CherenkovMediumBase.get_dispersion_model(medium::Water) = medium.dispersion_model
+
+
 CherenkovMediumBase.pressure(medium::Water) = medium.pressure
 CherenkovMediumBase.temperature(medium::Water) = medium.temperature
 CherenkovMediumBase.material_density(medium::Water) = 1.
-CherenkovMediumBase.absorption_length(medium::Water, wavelength) = 20.
-CherenkovMediumBase.sample_scattering_function(medium::Water) =  rand(medium.scattering_model.scattering_function)
-
-
-function CherenkovMediumBase.phase_refractive_index(medium::Water, wavelength)
-    return phase_refractive_index(medium.dispersion_model, wavelength)
-end
-
-function CherenkovMediumBase.dispersion(medium::Water, wavelength)
-    return dispersion(medium.dispersion_model, wavelength)
-end
-
-function CherenkovMediumBase.scattering_length(medium::Water, wavelength)
-    return scattering_length(medium.scattering_model, wavelength)
-end
 
 # Implement other required methods similarly
-```
-
-This example defines a `Water` type which uses the Quan-Fry dispersion model and the Kopalevich scattering model
-
-## Usage
-
-Here is a simple example of how to use the package:
-
-```julia
-using CherenkovMediumBase
 
 # Define a medium (example)
 medium = Water(34.82, 4, 100, 0.005, 0.005, 0.95)
