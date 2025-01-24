@@ -1,19 +1,4 @@
 export DIPPR105
-export refractive_index_fry
-export dispersion_fry
-export sca_len_part_conc
-
-
-# Scattering functions
-export hg_scattering_func
-export sl_scattering_func
-export generic_scattering_function
-export mixed_hg_sl_scattering_func
-export mixed_hg_sl_scattering_func_ppc
-export mixed_hg_generic_scattering_func
-
-using Polynomials
-
 
 """
 DIPPR105Params
