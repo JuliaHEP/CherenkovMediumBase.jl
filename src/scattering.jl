@@ -198,11 +198,11 @@ function sample_scattering_function(model::AbstractScatteringModel)
 end
 
 """
-    KopelevichScatteringModel{F<:AbstractScatteringFunction, T}
+    KopelevichScatteringModel{T, F<:AbstractScatteringFunction}
 
 Struct for Kopelevich scattering model.
 """
-struct KopelevichScatteringModel{F<:AbstractScatteringFunction, T} <: AbstractScatteringModel
+struct KopelevichScatteringModel{T, F<:AbstractScatteringFunction, } <: AbstractScatteringModel
     scattering_function::F
     vol_conc_large_part::T
     vol_conc_small_part::T
@@ -226,7 +226,7 @@ end
 
 Struct for wavelength-independent scattering model.
 """
-struct WavelengthIndependentScatteringModel{T, F<:AbstractScatteringFunction} <: AbstractScatteringModel
+struct WavelengthIndependentScatteringModel{ F<:AbstractScatteringFunction, T} <: AbstractScatteringModel
     scattering_function::F
     scattering_length::T
 end
