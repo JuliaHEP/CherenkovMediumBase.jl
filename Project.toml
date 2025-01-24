@@ -1,7 +1,7 @@
 name = "CherenkovMediumBase"
 uuid = "62ded331-ac74-4432-90fd-7fafc84e95f4"
 authors = ["Christian Haack <chr.hck@gmail.com>"]
-version = "1.4.6"
+version = "1.0.0"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
@@ -16,7 +16,7 @@ Interpolations = "0.15.1"
 Polynomials = "4.0.13"
 Random = "1.11.0"
 StaticArrays = "1.9.10"
-julia = "1.10"
+julia = "1.11"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
