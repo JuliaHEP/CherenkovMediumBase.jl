@@ -122,9 +122,23 @@ end
     @testset "KopelevichScatteringModel" begin
         scattering_model = KopelevichScatteringModel(HenyeyGreenStein(0.95), 7.5E-3, 7.5E-3)
 
+        @testset "isbits" begin
+            @test isbits(scattering_model)
+        end
+
         # Test scattering_length function
         @testset "scattering_length" begin
             @test scattering_length(scattering_model, 400.0) ≈ 37.69 atol=1e-2
         end
     end
+
+    @testset "MixedHGES" begin
+        scattering_function = MixedHGES(0.95, 0.835, 0.5)
+
+        @testset "isbits" begin
+            @test isbits(scattering_function)
+        end
+    end
+
+
 end

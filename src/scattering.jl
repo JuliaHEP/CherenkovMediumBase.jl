@@ -141,10 +141,10 @@ end
 
 Struct for two-component scattering model.
 """
-struct TwoComponentScatteringFunction{F1<:AbstractScatteringFunction, F2<:AbstractScatteringFunction} <: AbstractScatteringFunction
+struct TwoComponentScatteringFunction{F1<:AbstractScatteringFunction, F2<:AbstractScatteringFunction,T} <: AbstractScatteringFunction
     f1::F1
     f2::F2
-    fraction::Real
+    fraction::T
 end
 
 
