@@ -97,8 +97,8 @@ end
 Einstein-Smoluchowsky Scattering PDF.
 """
 function es_scattering(cos_theta::T, b::T) where {T<:Real}
-    a = 1/(4*pi) * 1 / (1+b/3)
-    return a*(1+b*cos_theta^2)
+    a::T = 1/(4*pi) * 1 / (1+b/3)
+    return T(a*(1+b*cos_theta^2))
 end
 
 """
@@ -107,8 +107,8 @@ end
 Anti-derivative of the ES scattering function.
 """
 function es_scattering_integral(cos_theta::T, b::T) where {T<:Real}
-    a = 1/(4*pi) * 1 / (1+b/3)
-    return a*cos_theta*(1 + (b*cos_theta^2)/3) * 2*pi
+    a::T = 1/(4*T(pi)) * 1 / (1+b/3)
+    return T(a*cos_theta*(1 + (b*cos_theta^2)/3) * 2*pi)
 end
 
 """
@@ -117,7 +117,7 @@ end
 Integral of ES scattering function from -1 to cos_theta
 """
 function es_scattering_cumulative(cos_theta::T, b::T) where {T<:Real}
-    return es_scattering_integral(cos_theta, b) - es_scattering_integral(-1., b)
+    return es_scattering_integral(cos_theta, b) - es_scattering_integral(-one(T), b)
 end
 
 """

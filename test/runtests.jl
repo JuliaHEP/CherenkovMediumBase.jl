@@ -1,4 +1,5 @@
 using CherenkovMediumBase
+using CherenkovMediumBase: es_scattering, es_scattering_integral, es_scattering_cumulative
 using Test
 using Random
 
@@ -115,8 +116,29 @@ end
         @testset "EinsteinSmoluchowsky" begin
             scattering_function = EinsteinSmoluchowsky(0.835)
             @test rand(scattering_function) ≈ -0.41788 atol=1e-5
+            @test @inferred rand(scattering_function) isa Float64
         end    
-    
+
+        @testset "Type Stability" begin
+            
+            let b = 0.835, cos_theta = 0.5
+
+                @test @inferred es_scattering(cos_theta, b) isa Float64
+                @test @inferred es_scattering_integral(cos_theta, b) isa Float64
+                @test @inferred es_scattering_cumulative(cos_theta, b) isa Float64
+            end
+
+            let b = 0.835f0,  cos_theta = 0.5f0
+
+                @test @inferred es_scattering(cos_theta, b) isa Float32
+                @test @inferred es_scattering_integral(cos_theta, b) isa Float32
+                @test @inferred es_scattering_cumulative(cos_theta, b) isa Float32
+            end
+
+
+
+
+        end
     end
 
     @testset "KopelevichScatteringModel" begin
