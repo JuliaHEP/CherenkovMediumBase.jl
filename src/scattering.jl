@@ -1,6 +1,5 @@
-import Distributions
-using Distributions: Sampleable, Univariate, Continuous
-using Random
+using Distributions
+using Random: AbstractRNG
 using Polynomials: fit, Polynomial, ImmutablePolynomial
 
 export AbstractScatteringFunction
@@ -18,7 +17,7 @@ export WavelengthIndependentScatteringModel
 
 abstract type AbstractScatteringFunction <: Sampleable{Univariate, Continuous} end
 
-rand(rng::AbstractRNG, s::AbstractScatteringFunction) = _not_implemented(s)
+Distributions.rand(rng::AbstractRNG, s::AbstractScatteringFunction) = _not_implemented(s)
 
 
 """
@@ -48,7 +47,7 @@ function _hg_scattering_func(rng::AbstractRNG, g::T) where {T <: Real}
     return clamp(costheta, T(-1), T(1))
 end
 
-Base.rand(rng::AbstractRNG, s::HenyeyGreenStein) = _hg_scattering_func(rng, s.g)
+Distributions.rand(rng::AbstractRNG, s::HenyeyGreenStein) = _hg_scattering_func(rng, s.g)
 
 """
     SimplifiedLiu{T}
@@ -74,7 +73,7 @@ function sl_scattering_func(rng::AbstractRNG, g::T) where {T <: Real}
     return clamp(costheta, T(-1), T(1))
 end
 
-Base.rand(rng::AbstractRNG, s::SimplifiedLiu) = sl_scattering_func(rng, s.g)
+Distributions.rand(rng::AbstractRNG, s::SimplifiedLiu) = sl_scattering_func(rng, s.g)
 
 
 """
@@ -86,7 +85,7 @@ struct PolynomialScatteringFunction{T, P <: ImmutablePolynomial{T}} <: AbstractS
     poly::P
 end
 
-function Base.rand(rng::AbstractRNG, s::PolynomialScatteringFunction{T}) where {T}
+function Distributions.rand(rng::AbstractRNG, s::PolynomialScatteringFunction{T}) where {T}
     eta = Base.rand(rng, T)
     return clamp(s.poly(eta), T(-1), T(1))
 end
@@ -152,7 +151,7 @@ MixedHGES(g, b, fraction) = TwoComponentScatteringFunction(HenyeyGreenStein(g), 
 MixedHGSL(g, fraction) = TwoComponentScatteringFunction(HenyeyGreenStein(g), SimplifiedLiu(g), fraction)
 
 
-function Base.rand(rng::AbstractRNG, s::TwoComponentScatteringFunction)
+function Distributions.rand(rng::AbstractRNG, s::TwoComponentScatteringFunction)
     choice = Base.rand(rng, Float64)
     if choice < s.fraction
         return Base.rand(rng, s.f1)
@@ -194,7 +193,7 @@ get_scattering_function(model::AbstractScatteringModel) = _not_implemented(model
 
 function sample_scattering_function(model::AbstractScatteringModel)
     func = get_scattering_function(model)
-    return rand(func)
+    return Distributions.rand(func)
 end
 
 """
@@ -221,6 +220,8 @@ function scattering_length(model::KopelevichScatteringModel, wavelength::Real)
     )
 end
 
+get_scattering_function(model::KopelevichScatteringModel) = model.scattering_function
+
 """
     WavelengthIndependentScatteringModel{T, F<:AbstractScatteringFunction} <: AbstractScatteringModel
 
@@ -235,3 +236,5 @@ end
 function scattering_length(model::WavelengthIndependentScatteringModel, wavelength::Real)
     return model.scattering_length
 end
+
+get_scattering_function(model::WavelengthIndependentScatteringModel) = model.scattering_function

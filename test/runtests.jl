@@ -2,6 +2,7 @@ using CherenkovMediumBase
 using CherenkovMediumBase: es_scattering, es_scattering_integral, es_scattering_cumulative
 using Test
 using Random
+using StaticArrays
 
 Random.seed!(1234)
 
@@ -34,28 +35,26 @@ struct MockMediumProperties <: MediumProperties
     pressure::Float64
     dispersion_model::QuanFryDispersion
     scattering_model::KopelevichScatteringModel
-    MockMediumProperties(salinity, temperature, pressure) = new(salinity, temperature, pressure, QuanFryDispersion(salinity, temperature, pressure), KopelevichScatteringModel(HenyeyGreenStein(0.8), 0.1, 0.2))
+    absoption_model::InterpolatedAbsorptionModel
+    function MockMediumProperties(salinity, temperature, pressure)
+        return new(
+            salinity,
+            temperature,
+            pressure,
+            QuanFryDispersion(salinity, temperature, pressure),
+            KopelevichScatteringModel(HenyeyGreenStein(0.8), 0.1, 0.2),
+            InterpolatedAbsorptionModel(SA[1., 2], SA[3., 4])
+            )
+    end
 end
 
+CherenkovMediumBase.get_absorption_model(medium::MockMediumProperties) = medium.absoption_model
+CherenkovMediumBase.get_scattering_model(medium::MockMediumProperties) = medium.scattering_model
+CherenkovMediumBase.get_dispersion_model(medium::MockMediumProperties) = medium.dispersion_model
 
 CherenkovMediumBase.pressure(medium::MockMediumProperties) = medium.pressure
 CherenkovMediumBase.temperature(medium::MockMediumProperties) = medium.temperature
 CherenkovMediumBase.material_density(medium::MockMediumProperties) = 3.
-CherenkovMediumBase.absorption_length(medium::MockMediumProperties, wavelength) = 6.
-CherenkovMediumBase.sample_scattering_function(medium::MockMediumProperties) =  rand(medium.scattering_model.scattering_function)
-
-
-function CherenkovMediumBase.phase_refractive_index(medium::MockMediumProperties, wavelength)
-    return phase_refractive_index(medium.dispersion_model, wavelength)
-end
-
-function CherenkovMediumBase.dispersion(medium::MockMediumProperties, wavelength)
-    return dispersion(medium.dispersion_model, wavelength)
-end
-
-function CherenkovMediumBase.scattering_length(medium::MockMediumProperties, wavelength)
-    return scattering_length(medium.scattering_model, wavelength)
-end
 
 
 @testset "CherenkovMediumBase.jl" begin
