@@ -65,7 +65,7 @@ radiation_length(medium::MediumProperties) = _not_implemented(medium)
 """
     sample_scattering_function(medium::MediumProperties)
 
-Return a scattering angle sampled from the scattering function of the medium.
+Return a cos(scattering angle) sampled from the scattering function of the medium.
 """
 function sample_scattering_function(medium::MediumProperties)
     model = get_scattering_model(medium)
@@ -101,7 +101,7 @@ Return the phase refractive index at `wavelength`.
 `wavelength` is expected to be in units nm.
 """
 function phase_refractive_index(medium::MediumProperties, wavelength)
-    model =get_dispersion_model(medium)
+    model = get_dispersion_model(medium)
     return phase_refractive_index(model, wavelength)
 end
 

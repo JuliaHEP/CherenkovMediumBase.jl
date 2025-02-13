@@ -25,9 +25,9 @@ Helper function to get the parameters for the Quan & Fry formula as function of
 salinity, temperature and pressure.
 """
 function calc_quan_fry_params(
-    salinity::Real,
-    temperature::Real,
-    pressure::Real)
+    salinity::T,
+    temperature::T,
+    pressure::T) where {T <: Real}
 
     n0 = 1.31405
     n1 = 1.45e-5
@@ -54,11 +54,12 @@ function calc_quan_fry_params(
     a3 = -n9
     a4 = n10
 
-    return a01, a2, a3, a4
+    return T(a01), T(a2), T(a3), T(a4)
 end
 
+
 """
-    refractive_index_fry(wavelength, salinity, temperature, pressure)
+    _refractive_index_fry(wavelength, quan_fry_params)
 
 The phase refractive index of sea water according to a model
 from Quan & Fry.
@@ -77,14 +78,6 @@ downloaded Jan 2011 from: http://www.physics.ox.ac.uk/Users/schuster/thesis0098m
 Adapted from clsim (https://github.com/claudiok/clsim)
 """
 function _refractive_index_fry(
-    wavelength::T;
-    salinity::Real,
-    temperature::Real,
-    pressure::Real) where {T<:Real}
-    refractive_index_fry(wavelength, T.(calc_quan_fry_params(salinity, temperature, pressure)))
-end
-
-function _refractive_index_fry(
     wavelength::Real,
     quan_fry_params::Tuple{U,U,U,U}
 ) where {U<:Real}
@@ -94,26 +87,10 @@ function _refractive_index_fry(
 end
 
 """
-    dispersion_fry(
-        wavelength::T;
-        salinity::Real,
-        temperature::Real,
-        pressure::Real) where {T <: Real}
+    dispersion_fry(wavelength, a2, a3, a4)
 
-Calculate the dispersion (dn/dλ) for the Quan & Fry model.
-Wavelength is given in nm, salinity in permille, temperature in °C and pressure in atm
+Calculate the dispersion for the Quan & Fry dispersion model.
 """
-function dispersion_fry(
-    wavelength::T;
-    salinity::Real,
-    temperature::Real,
-    pressure::Real) where {T<:Real}
-
-    quan_fry_params = T.(calc_quan_fry_params(salinity, temperature, pressure))
-
-    dispersion_fry(wavelength, quan_fry_params[2], quan_fry_params[3], quan_fry_params[4])
-end
-
 function dispersion_fry(wavelength::T, a2, a3, a4) where {T<:Number}
     x = one(T) / wavelength
 

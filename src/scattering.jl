@@ -2,8 +2,8 @@ using Distributions
 using Random: AbstractRNG
 using Polynomials: fit, Polynomial, ImmutablePolynomial
 
+# Scattering functions
 export AbstractScatteringFunction
-export AbstractScatteringModel
 export HenyeyGreenStein
 export PolynomialScatteringFunction
 export EinsteinSmoluchowsky
@@ -12,6 +12,8 @@ export TwoComponentScatteringFunction
 export MixedHGES
 export MixedHGSL
 
+# Scattering models
+export AbstractScatteringModel
 export KopelevichScatteringModel
 export WavelengthIndependentScatteringModel
 
@@ -69,7 +71,7 @@ Implementation from: https://user-web.icecube.wisc.edu/~dima/work/WISC/ppc/spice
 function sl_scattering_func(rng::AbstractRNG, g::T) where {T <: Real}
     eta = Base.rand(rng, T)
     beta = (1-g) / (1+g)
-    costheta::T = 2 * eta^beta - 1
+    costheta::T = T(2) * eta^beta - T(1)
     return clamp(costheta, T(-1), T(1))
 end
 
@@ -138,7 +140,7 @@ end
 """
     TwoComponentScatteringFunction{F1<:AbstractScatteringFunction, F2<:AbstractScatteringFunction}
 
-Struct for two-component scattering model.
+Struct for two-component mixture scattering model.
 """
 struct TwoComponentScatteringFunction{F1<:AbstractScatteringFunction, F2<:AbstractScatteringFunction,T} <: AbstractScatteringFunction
     f1::F1
