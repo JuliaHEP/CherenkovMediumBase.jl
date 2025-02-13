@@ -39,7 +39,12 @@ struct Water <: MediumProperties
     mean_scattering_angle::Float64
     dispersion_model::QuanFryDispersion
     scattering_model::KopelevichScatteringModel
-    function Water(salinity, temperature, pressure, vol_conc_small_part, vol_conc_large_part, mean_scattering_angle)
+    absoeption_model::WavelengthIndependentAbsorptionModel
+    function Water(salinity, temperature, pressure, vol_conc_small_part, vol_conc_large_part, mean_scattering_angle, absorption_length)
+
+        salinity, temperature, pressure = promote(salinity, temperature, pressure)
+        vol_conc_small_part, vol_conc_large_part, mean_scattering_angle = promote(vol_conc_small_part, vol_conc_large_part, mean_scattering_angle)
+        
         return new(
             salinity,
             temperature,
@@ -48,14 +53,15 @@ struct Water <: MediumProperties
             vol_conc_large_part,
             mean_scattering_angle,            
             QuanFryDispersion(salinity, temperature, pressure),
-            KopelevichScatteringModel(HenyeyGreenStein(mean_scattering_angle), vol_conc_small_part, vol_conc_large_part)
+            KopelevichScatteringModel(HenyeyGreenStein(mean_scattering_angle), vol_conc_small_part, vol_conc_large_part),
+            WavelengthIndependentAbsorptionModel(absorption_length)
             )
         end
 end
 
 CherenkovMediumBase.get_scattering_model(medium::Water) = medium.scattering_model
 CherenkovMediumBase.get_dispersion_model(medium::Water) = medium.dispersion_model
-
+CherenkovMediumBase.get_absorption_model(medium::Water) = medium.absirption_model
 
 CherenkovMediumBase.pressure(medium::Water) = medium.pressure
 CherenkovMediumBase.temperature(medium::Water) = medium.temperature
@@ -64,7 +70,7 @@ CherenkovMediumBase.material_density(medium::Water) = 1.
 # Implement other required methods similarly
 
 # Define a medium (example)
-medium = Water(34.82, 4, 100, 0.005, 0.005, 0.95)
+medium = Water(34.82, 4, 100, 0.005, 0.005, 0.95, 30)
 
 # Calculate phase refractive index at a given wavelength
 wavelength = 500.0 # nm
