@@ -133,10 +133,6 @@ end
                 @test @inferred es_scattering_integral(cos_theta, b) isa Float32
                 @test @inferred es_scattering_cumulative(cos_theta, b) isa Float32
             end
-
-
-
-
         end
     end
 
@@ -160,6 +156,24 @@ end
             @test isbits(scattering_function)
         end
     end
+    
+end
 
+@testset "Absorption Models" begin
+    @testset "Interpolated Absorption Model" begin
+        wavelengths = SA[400.0, 500.0, 600.0]
+        absorption = SA[10.0, 20.0, 30.0]
+        abs_model = InterpolatedAbsorptionModel(wavelengths, absorption)
 
+        @test absorption_length(abs_model, 450.0) ≈ 15.0 atol=1e-2
+        @test absorption_length(abs_model, 550.0) ≈ 25.0 atol=1e-2
+    end
+
+    @testset "Wavelength Independent Absorption Model" begin
+        abs_length = 25.0
+        abs_model = WavelengthIndependentAbsorptionModel(abs_length)
+
+        @test absorption_length(abs_model, 450.0) ≈ abs_length atol=1e-2
+        @test absorption_length(abs_model, 550.0) ≈ abs_length atol=1e-2
+    end
 end

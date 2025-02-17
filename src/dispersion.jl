@@ -144,3 +144,45 @@ Calculate the dispersion for the Quan & Fry dispersion model.
 function dispersion(dispersion_model::QuanFryDispersion, wavelength)
     return dispersion_fry(wavelength, dispersion_model.a2, dispersion_model.a3, dispersion_model.a4)
 end
+
+
+"""
+    group_velocity(dispersion_model, wavelength)
+Return the group_velocity in m/ns at `wavelength`.
+
+`wavelength` is expected to be in units nm.
+"""
+function group_velocity(dispersion_model::AbstractDispersionModel, wavelength)
+    global c_vac_m_ns
+    T = typeof(wavelength)
+
+    # Explicitely convert everything to the type of wavelength
+    # This is useful to avoid double precision if this function is called in a CUDA kernel
+
+    ref_ix::T = phase_refractive_index(dispersion_model, wavelength)
+    λ_0::T = ref_ix * wavelength
+    T(c_vac_m_ns) / (ref_ix - λ_0 * dispersion(dispersion_model, wavelength))
+end
+
+"""
+    cherenkov_angle(medium, wavelength)
+Calculate the cherenkov angle (in rad) for `wavelength`.
+
+`wavelength` is expected to be in units nm.
+"""
+function cherenkov_angle(dispersion_model::AbstractDispersionModel, wavelength)
+    return acos(one(typeof(wavelength)) / phase_refractive_index(dispersion_model, wavelength))
+end
+
+"""
+    group_refractive_index(medium, wavelength)
+Return the group refractive index at `wavelength`.
+
+`wavelength` is expected to be in units nm.
+"""
+function group_refractive_index(dispersion_model::AbstractDispersionModel, wavelength)
+    T = typeof(wavelength)
+
+    ref_ix = phase_refractive_index(dispersion_model, wavelength)
+    return ref_ix / (T(1.0) + dispersion(dispersion_model, wavelength) * wavelength / ref_ix)
+end
