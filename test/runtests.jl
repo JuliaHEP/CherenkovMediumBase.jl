@@ -48,6 +48,8 @@ struct MockMediumProperties <: MediumProperties
     end
 end
 
+struct FaultyInterfaceMockMedium <: MediumProperties end
+
 CherenkovMediumBase.get_absorption_model(medium::MockMediumProperties) = medium.absoption_model
 CherenkovMediumBase.get_scattering_model(medium::MockMediumProperties) = medium.scattering_model
 CherenkovMediumBase.get_dispersion_model(medium::MockMediumProperties) = medium.dispersion_model
@@ -60,6 +62,28 @@ CherenkovMediumBase.material_density(medium::MockMediumProperties) = 3.
 @testset "CherenkovMediumBase.jl" begin
     medium = MockMediumProperties(35.0, 15.0, 1.)
     test_interface(medium)
+
+    @testset "Faulty Interface" begin
+        medium = FaultyInterfaceMockMedium()
+        @test_throws ErrorException get_absorption_model(medium)
+        @test_throws ErrorException get_scattering_model(medium)
+        @test_throws ErrorException get_dispersion_model(medium)
+        @test_throws ErrorException pressure(medium)
+        @test_throws ErrorException temperature(medium)
+        @test_throws ErrorException material_density(medium)
+        @test_throws ErrorException group_velocity(medium, 100)
+        @test_throws ErrorException sample_scattering_function(medium)
+        @test_throws ErrorException cherenkov_angle(medium, 100)
+        @test_throws ErrorException dispersion(medium, 100)
+        @test_throws ErrorException group_refractive_index(medium, 100)
+        @test_throws ErrorException phase_refractive_index(medium, 100)
+        @test_throws ErrorException absorption_length(medium, 100)
+        @test_throws ErrorException scattering_length(medium, 100)
+    end
+
+
+
+
 end
 
 @testset "Dispersion Models" begin
@@ -156,6 +180,17 @@ end
             @test isbits(scattering_function)
         end
     end
+
+    @testset "WavelengthIndependentScatteringModel" begin
+        sca_len = 25.0
+        scattering_function = MixedHGES(0.95, 0.835, 0.5)
+        scattering_model = WavelengthIndependentScatteringModel(scattering_function, sca_len)
+
+        @test scattering_length(scattering_model, 450.0) == sca_len 
+        @test scattering_length(scattering_model, 550.0) == sca_len 
+        @test sample_scattering_function(scattering_model) isa Number
+    end
+
     
 end
 
