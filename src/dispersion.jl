@@ -1,4 +1,4 @@
-export DispersionModel
+export AbstractDispersionModel
 export QuanFryDispersion
 
 abstract type AbstractDispersionModel end
