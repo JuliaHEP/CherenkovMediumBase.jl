@@ -4,6 +4,8 @@ using Test
 using Random
 using StaticArrays
 
+include("aqua.jl")
+
 Random.seed!(1234)
 
 
