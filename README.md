@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/JuliaHEP/CherenkovMediumBase.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaHEP/CherenkovMediumBase.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/juliahep/CherenkovMediumBase.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/juliahep/CherenkovMediumBase.jl)
 
-CherenkovMediumBase provides abstract types and functions for calculating various optical properties of different media. It provides functionalities to compute properties such as refractive index, scattering length, absorption length, and more, based on the medium's characteristics.
+CherenkovMediumBase provides abstract types and functions for calculating various optical properties of different media. It provides functionalities to compute properties such as refractive index, scattering length, absorption length, and more, based on the medium's characteristics, focusing on applications in Cherenkov detectors.
 
 ## Main Features
 
